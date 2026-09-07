@@ -8,6 +8,7 @@ public class StudentdtoApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(StudentdtoApplication.class, args);
+		System.out.println("Hello Students welcome to dto learning project");
 	}
 
 }

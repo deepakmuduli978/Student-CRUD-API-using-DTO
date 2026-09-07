@@ -1,11 +1,9 @@
 package com.example.studentdto.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 
 @Entity
+@Table(name="StudentDto")
 public class Student {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -13,6 +11,8 @@ public class Student {
     private String name;
     private String email;
     private Long mob;
+    private String subject;
+    private String Address;
     private boolean isDeleted;
 
     public String getEmail() {
@@ -53,5 +53,21 @@ public class Student {
 
     public void setDeleted(boolean deleted) {
         isDeleted = deleted;
+    }
+
+    public String getAddress() {
+        return Address;
+    }
+
+    public void setAddress(String address) {
+        Address = address;
+    }
+
+    public String getSubject() {
+        return subject;
+    }
+
+    public void setSubject(String subject) {
+        this.subject = subject;
     }
 }
