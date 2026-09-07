@@ -57,15 +57,16 @@ public class StudentService {
         return isexist.get();
     }
 
-    public Student softdelete(Integer id){
+    public Boolean softdelete(Integer id){
         Optional<Student> isexist=repository.findById(id);
         if(isexist.isEmpty())
         {
         return null;
         }
         Student ref= isexist.get();
-    //    if(ref.isDeleted()==true) return null;
+      if(ref.isDeleted()==true) return false;
         ref.setDeleted(true);
-        return repository.save(ref);
+        repository.save(ref);
+        return true;
     }
 }

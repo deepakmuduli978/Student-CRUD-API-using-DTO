@@ -2,6 +2,8 @@ package com.example.studentdto.controller;
 
 import com.example.studentdto.entity.Student;
 import com.example.studentdto.service.StudentService;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -17,40 +19,57 @@ public class StudentController {
     }
 
     @PostMapping("/create")
-    public Student createstudent(@RequestBody Student student){
+    public ResponseEntity<Student> createstudent(@RequestBody Student student){
+        student.setDeleted(false);
         Student save=service.createstd(student);
-        return save;
+        return ResponseEntity.status(HttpStatus.CREATED).body(save);
     }
 
     @GetMapping("/getAll")
-    public List<Student> Getall(){
+    public ResponseEntity<List<Student>> Getall(){
         List<Student> getdetails=service.findall();
-        return getdetails;
+        if (getdetails==null){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(getdetails);
+        }
+        return ResponseEntity.status(HttpStatus.FOUND).body(getdetails);
     }
 
     @GetMapping("/get")
-    public Student GetOne(@RequestParam Integer id){
+    public ResponseEntity<Student> GetOne(@RequestParam Integer id){
         Student getOnedetails=service.findone(id);
-        return getOnedetails;
+        if(getOnedetails==null){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(getOnedetails);
+        }
+        return ResponseEntity.status(HttpStatus.FOUND).body(getOnedetails);
     }
 
     @PutMapping("/update/{id}")
-    public Student update(@RequestBody Student student,@PathVariable Integer id){
+    public ResponseEntity<Student> update(@RequestBody Student student,@PathVariable Integer id){
         Student update=service.updatedetails(student,id);
-        return update;
+        if(update==null){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(update);
+        }
+        return ResponseEntity.status(HttpStatus.OK).body(update);
     }
 
     @DeleteMapping("/delete/{id}")
-    public String Delete(@PathVariable Integer id){
+    public ResponseEntity<String> Delete(@PathVariable Integer id){
         Student deleterecord=service.harddelete(id);
-        return "Your Record Deleted Permanently";
+        if(deleterecord==null){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Your record doesn't exist");
+        }
+        return ResponseEntity.status(HttpStatus.FOUND).body("Your record deleted permanently");
     }
 
     @DeleteMapping("/isdelete")
-    public String isDelete(@RequestParam Integer id){
-        Student isdeleterecord=service.softdelete(id);
-
-        return "Your record is marked as deleted";
+    public ResponseEntity<String> isDelete(@RequestParam Integer id){
+        Boolean isdeleterecord=service.softdelete(id);
+        if(isdeleterecord==null){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Your record doesn't exist we can't perform softdelete");
+        } else if (isdeleterecord==false) {
+            return ResponseEntity.status(HttpStatus.FOUND).body("Your Record is already softdelete is true");
+        }
+        return ResponseEntity.status(HttpStatus.FOUND).body("Your record is marked as softdelete");
     }
 
 }
