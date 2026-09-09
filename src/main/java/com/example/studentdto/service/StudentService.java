@@ -3,6 +3,7 @@ package com.example.studentdto.service;
 import com.example.studentdto.dto.StudentCreateRequestDto;
 import com.example.studentdto.dto.StudentResponseDto;
 import com.example.studentdto.dto.StudentUpdateRequestDto;
+import com.example.studentdto.dto.StudentUpdateResponseDto;
 import com.example.studentdto.entity.Student;
 import com.example.studentdto.repository.StudentRepository;
 import org.springframework.stereotype.Service;
@@ -43,17 +44,15 @@ public class StudentService {
         return stddto;
     }
 
-    public StudentUpdateRequestDto updatedetails(StudentUpdateRequestDto student, Integer id){
+    public StudentUpdateResponseDto updatedetails(StudentUpdateRequestDto student, Integer id){
         Optional<Student> isexist=repository.findByIdAndIsDeletedIsFalse(id);
         if(isexist.isEmpty()){
             return null;
         }
-        Student updatedEntity=map.updateDtotoEntity(student);
-        Student updatedrespEntity=repository.save(updatedEntity);
-
-        StudentResponseDto updaterespdto=map.EntitytoDtoResponseById(updatedrespEntity);
-        return updaterespdto;
-
+        Student updateEntity=map.updateDtotoEntity(student,isexist.get());
+        repository.save(updateEntity);
+        StudentUpdateResponseDto updatedDtoresp=map.UpdateEntitytoDto(updateEntity);
+        return updatedDtoresp;
     }
 
     public Student harddelete(Integer id){

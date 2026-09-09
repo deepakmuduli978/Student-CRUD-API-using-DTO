@@ -4,6 +4,7 @@ import com.example.studentdto.StudentdtoApplication;
 import com.example.studentdto.dto.StudentCreateRequestDto;
 import com.example.studentdto.dto.StudentResponseDto;
 import com.example.studentdto.dto.StudentUpdateRequestDto;
+import com.example.studentdto.dto.StudentUpdateResponseDto;
 import com.example.studentdto.entity.Student;
 import org.springframework.stereotype.Component;
 
@@ -69,13 +70,25 @@ public class MappingEntityDto {
         dtoresp.setUpdatedate(entity.getUpdatedate());
         return dtoresp;
     }
-    public Student updateDtotoEntity(StudentUpdateRequestDto stdEntity){
-        Student updatedto=new Student();
-        updatedto.setName(stdEntity.getName());
-        updatedto.setAddress(stdEntity.getAddress());
-        updatedto.setMob(stdEntity.getMob());
-        updatedto.setSubject(stdEntity.getSubject());
+    public Student updateDtotoEntity(StudentUpdateRequestDto stddto,Student updatedto){
+        updatedto.setName(stddto.getName());
+        updatedto.setAddress(stddto.getAddress());
+        updatedto.setMob(stddto.getMob());
+        updatedto.setSubject(stddto.getSubject());
         updatedto.setUpdatedate(LocalDate.now());
+
         return updatedto;
+    }
+    public StudentUpdateResponseDto UpdateEntitytoDto(Student stdentity){
+        StudentUpdateResponseDto stdupdatedto=new StudentUpdateResponseDto();
+        stdupdatedto.setName(stdentity.getName());
+        stdupdatedto.setEmail(stdentity.getEmail());
+        stdupdatedto.setMob(stdentity.getMob());
+        stdupdatedto.setAddress(stdentity.getAddress());
+        stdupdatedto.setSubject(stdentity.getSubject());
+        stdupdatedto.setCreateDate(stdentity.getCreateDate());
+        stdupdatedto.setUpdatedate(stdentity.getUpdatedate());
+        stdupdatedto.setMessage("Updated record id "+stdentity.getId()+" Successful");
+        return stdupdatedto;
     }
 }

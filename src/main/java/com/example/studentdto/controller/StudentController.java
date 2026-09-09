@@ -3,6 +3,7 @@ package com.example.studentdto.controller;
 import com.example.studentdto.dto.StudentCreateRequestDto;
 import com.example.studentdto.dto.StudentResponseDto;
 import com.example.studentdto.dto.StudentUpdateRequestDto;
+import com.example.studentdto.dto.StudentUpdateResponseDto;
 import com.example.studentdto.entity.Student;
 import com.example.studentdto.service.StudentService;
 import org.springframework.http.HttpStatus;
@@ -46,12 +47,12 @@ public class StudentController {
     }
 
     @PutMapping("/update/{id}")
-    public ResponseEntity<StudentUpdateRequestDto> update(@RequestBody StudentUpdateRequestDto student, @PathVariable Integer id){
-        StudentUpdateRequestDto updatedto=service.updatedetails(student,id);
+    public ResponseEntity<StudentUpdateResponseDto> update(@RequestBody StudentUpdateRequestDto student, @PathVariable Integer id){
+        StudentUpdateResponseDto updatedto=service.updatedetails(student,id);
         if(updatedto==null){
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(updatedto);
         }
-        return ResponseEntity.status(HttpStatus.OK).body(updatedto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(updatedto);
     }
 
     @DeleteMapping("/delete/{id}")
