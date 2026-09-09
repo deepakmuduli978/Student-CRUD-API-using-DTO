@@ -1,6 +1,9 @@
 package com.example.studentdto.entity;
 
 import jakarta.persistence.*;
+import org.springframework.cglib.core.Local;
+
+import java.time.LocalDate;
 
 @Entity
 @Table(name="StudentDto")
@@ -14,6 +17,8 @@ public class Student {
     private String subject;
     private String Address;
     private boolean isDeleted;
+    private LocalDate CreateDate;
+    private LocalDate Updatedate;
 
     public String getEmail() {
         return email;
@@ -69,5 +74,21 @@ public class Student {
 
     public void setSubject(String subject) {
         this.subject = subject;
+    }
+
+    public LocalDate getCreateDate() {
+        return CreateDate;
+    }
+
+    public void setCreateDate(LocalDate CreateDate) {
+       this.CreateDate = CreateDate;
+    }
+
+    public LocalDate getUpdatedate() {
+        return Updatedate;
+    }
+
+    public void setUpdatedate(LocalDate Updatedate) {
+        this.Updatedate = Updatedate;
     }
 }

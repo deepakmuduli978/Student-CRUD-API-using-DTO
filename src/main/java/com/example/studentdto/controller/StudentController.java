@@ -1,5 +1,8 @@
 package com.example.studentdto.controller;
 
+import com.example.studentdto.dto.StudentCreateRequestDto;
+import com.example.studentdto.dto.StudentResponseDto;
+import com.example.studentdto.dto.StudentUpdateRequestDto;
 import com.example.studentdto.entity.Student;
 import com.example.studentdto.service.StudentService;
 import org.springframework.http.HttpStatus;
@@ -19,37 +22,36 @@ public class StudentController {
     }
 
     @PostMapping("/create")
-    public ResponseEntity<Student> createstudent(@RequestBody Student student){
-        student.setDeleted(false);
-        Student save=service.createstd(student);
+    public ResponseEntity<StudentCreateRequestDto> createstudent(@RequestBody StudentCreateRequestDto studentdto){
+        StudentCreateRequestDto save=service.createstd(studentdto);
         return ResponseEntity.status(HttpStatus.CREATED).body(save);
     }
 
     @GetMapping("/getAll")
-    public ResponseEntity<List<Student>> Getall(){
-        List<Student> getdetails=service.findall();
-        if (getdetails==null){
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(getdetails);
+    public ResponseEntity<List<StudentResponseDto>> Getall(){
+        List<StudentResponseDto> getdetailsdto=service.findall();
+        if (getdetailsdto==null){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(getdetailsdto);
         }
-        return ResponseEntity.status(HttpStatus.FOUND).body(getdetails);
+        return ResponseEntity.status(HttpStatus.FOUND).body(getdetailsdto);
     }
 
     @GetMapping("/get")
-    public ResponseEntity<Student> GetOne(@RequestParam Integer id){
-        Student getOnedetails=service.findone(id);
-        if(getOnedetails==null){
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(getOnedetails);
+    public ResponseEntity<StudentResponseDto> GetOne(@RequestParam Integer id){
+        StudentResponseDto getdto=service.findone(id);
+        if(getdto==null){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(getdto);
         }
-        return ResponseEntity.status(HttpStatus.FOUND).body(getOnedetails);
+        return ResponseEntity.status(HttpStatus.FOUND).body(getdto);
     }
 
     @PutMapping("/update/{id}")
-    public ResponseEntity<Student> update(@RequestBody Student student,@PathVariable Integer id){
-        Student update=service.updatedetails(student,id);
-        if(update==null){
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(update);
+    public ResponseEntity<StudentUpdateRequestDto> update(@RequestBody StudentUpdateRequestDto student, @PathVariable Integer id){
+        StudentUpdateRequestDto updatedto=service.updatedetails(student,id);
+        if(updatedto==null){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(updatedto);
         }
-        return ResponseEntity.status(HttpStatus.OK).body(update);
+        return ResponseEntity.status(HttpStatus.OK).body(updatedto);
     }
 
     @DeleteMapping("/delete/{id}")
@@ -63,13 +65,19 @@ public class StudentController {
 
     @DeleteMapping("/isdelete")
     public ResponseEntity<String> isDelete(@RequestParam Integer id){
-        Boolean isdeleterecord=service.softdelete(id);
-        if(isdeleterecord==null){
+//        Boolean isdeleterecord=service.softdelete(id);
+//        if(isdeleterecord==null){
+//            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Your record doesn't exist we can't perform softdelete");
+//        } else if (isdeleterecord==false) {
+//            return ResponseEntity.status(HttpStatus.FOUND).body("Your Record is already softdelete is true");
+//        }
+//        return ResponseEntity.status(HttpStatus.FOUND).body("Your record is marked as softdelete");
+        //This above is used for own logic but we implement our own jpa methods so change it into bellow
+        Boolean isdeletedrecord=service.softdelete(id);
+        if(isdeletedrecord==false){
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Your record doesn't exist we can't perform softdelete");
-        } else if (isdeleterecord==false) {
-            return ResponseEntity.status(HttpStatus.FOUND).body("Your Record is already softdelete is true");
         }
-        return ResponseEntity.status(HttpStatus.FOUND).body("Your record is marked as softdelete");
+        return ResponseEntity.status(HttpStatus.FOUND).body("Your record is marked as soft delete");
     }
 
 }

@@ -1,5 +1,8 @@
 package com.example.studentdto.service;
 
+import com.example.studentdto.dto.StudentCreateRequestDto;
+import com.example.studentdto.dto.StudentResponseDto;
+import com.example.studentdto.dto.StudentUpdateRequestDto;
 import com.example.studentdto.entity.Student;
 import com.example.studentdto.repository.StudentRepository;
 import org.springframework.stereotype.Service;
@@ -11,41 +14,46 @@ import java.util.Optional;
 public class StudentService {
 
     private StudentRepository repository;
+    private MappingEntityDto map;
     //constructor injection
-    public StudentService(StudentRepository repository){
+    public StudentService(StudentRepository repository,MappingEntityDto map){
         this.repository=repository;
+        this.map=map;
     }
 
-    public Student createstd(Student stdreq){
-        Student stdresp=repository.save(stdreq);
-        return stdresp;
+
+    public StudentCreateRequestDto createstd(StudentCreateRequestDto studentdto){
+        Student entity=map.DtotoEntity(studentdto);
+        Student stdresp=repository.save(entity);
+        return map.EntitytoDto(stdresp);
     }
-    public List<Student> findall(){
-        List<Student> getdetails=repository.findAll();
-        return getdetails;
+    public List<StudentResponseDto> findall(){
+        List<Student> getentity=repository.findByAndIsDeletedIsFalse();
+        List<StudentResponseDto> respdto=map.EntitytoDtoResponse(getentity);
+        return respdto;
     }
 
-    public Student findone(Integer id){
-        Optional<Student> details=repository.findById(id);
-        if(details.isEmpty()){
+    public StudentResponseDto findone(Integer id){
+        Optional<Student> stdentity=repository.findByIdAndIsDeletedIsFalse(id);
+        if(stdentity.isEmpty()){
             return null;
         }
-        return details.get();
+        StudentResponseDto stddto=map.EntitytoDtoResponseById(stdentity.get());
+
+        return stddto;
     }
 
-    public Student updatedetails(Student student,Integer id){
-        Optional<Student> isexist=repository.findById(id);
+    public StudentUpdateRequestDto updatedetails(StudentUpdateRequestDto student, Integer id){
+        Optional<Student> isexist=repository.findByIdAndIsDeletedIsFalse(id);
         if(isexist.isEmpty()){
             return null;
         }
-        Student ref=isexist.get();
-        ref.setName(student.getName());
-        ref.setAddress(student.getAddress());
-        ref.setEmail(student.getEmail());
-        ref.setMob(student.getMob());
-        ref.setSubject(student.getSubject());
-        ref.setDeleted(student.isDeleted());
-        return repository.save(ref);
+        Student updatedEntity=map.updateDtotoEntity(student);
+        Student updatedrespEntity=repository.save(updatedEntity);
+
+        StudentResponseDto updaterespdto=map.EntitytoDtoResponseById(updatedrespEntity);
+        return updaterespdto;
+
     }
 
     public Student harddelete(Integer id){
@@ -58,13 +66,22 @@ public class StudentService {
     }
 
     public Boolean softdelete(Integer id){
-        Optional<Student> isexist=repository.findById(id);
-        if(isexist.isEmpty())
-        {
-        return null;
+//        Optional<Student> isexist=repository.findById(id);
+//        if(isexist.isEmpty())
+//        {
+//        return null;
+//        }
+//        Student ref= isexist.get();
+//      if(ref.isDeleted()==true) return false;
+//        ref.setDeleted(true);
+//        repository.save(ref);
+//        return true;
+        //instead of this we can use userdefined jpa methods to perform softdelete
+        Optional<Student> isexist=repository.findByIdAndIsDeletedIsFalse(id);
+        if(isexist.isEmpty()){
+            return false;
         }
-        Student ref= isexist.get();
-      if(ref.isDeleted()==true) return false;
+        Student ref=isexist.get();
         ref.setDeleted(true);
         repository.save(ref);
         return true;
