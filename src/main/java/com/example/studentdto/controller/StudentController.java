@@ -6,6 +6,7 @@ import com.example.studentdto.dto.StudentUpdateRequestDto;
 import com.example.studentdto.dto.StudentUpdateResponseDto;
 import com.example.studentdto.entity.Student;
 import com.example.studentdto.service.StudentService;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -23,7 +24,7 @@ public class StudentController {
     }
 
     @PostMapping("/create")
-    public ResponseEntity<StudentCreateRequestDto> createstudent(@RequestBody StudentCreateRequestDto studentdto){
+    public ResponseEntity<StudentCreateRequestDto> createstudent(@Valid @RequestBody StudentCreateRequestDto studentdto){
         StudentCreateRequestDto save=service.createstd(studentdto);
         return ResponseEntity.status(HttpStatus.CREATED).body(save);
     }
@@ -31,9 +32,11 @@ public class StudentController {
     @GetMapping("/getAll")
     public ResponseEntity<List<StudentResponseDto>> Getall(){
         List<StudentResponseDto> getdetailsdto=service.findall();
-        if (getdetailsdto==null){
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(getdetailsdto);
-        }
+        //Here we comment it because we now handle the exception mannually no need to handle the error or exceptioni in controller file
+        //we create a separete file Global exception handler to handle all types or error and exceptions
+//        if (getdetailsdto==null){
+//            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(getdetailsdto);
+//        }
         return ResponseEntity.status(HttpStatus.FOUND).body(getdetailsdto);
     }
 
